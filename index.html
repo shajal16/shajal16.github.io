@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Md Kamal Hossain | Breaking the Code</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        :root {
+            --bg-dark: #050505;
+            --bg-card: #111111;
+            --text-light: #ffffff;
+            --text-muted: #888888;
+            --accent-pink: #ff2a7a;
+            --accent-purple: #b324ff;
+            --border-color: #222222;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom Scrollbar for the dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-purple);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        /* --- Main Layout --- */
+        .layout-container {
+            display: flex;
+            gap: 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            align-items: flex-start; /* CRITICAL for sticky to work */
+        }
+
+        /* --- Left Side: Sticky Profile Card --- */
+        .profile-card {
+            flex: 0 0 350px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            
+            /* Sticky positioning */
+            position: sticky;
+            top: 2rem; 
+            
+            box-shadow: 0 10px 40px rgba(179, 36, 255, 0.08);
+            text-align: center;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-purple), var(--accent-pink));
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        .avatar-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.5rem auto;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: var(--bg-dark);
+            border: 4px solid var(--bg-card);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .profile-card h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .profile-card .title {
+            color: var(--accent-pink);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-card p.bio {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .stat-item h3 {
+            font-size: 1.5rem;
+            color: var(--text-light);
+        }
+
+        .stat-item p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            transition: opacity 0.3s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Right Side: Scrollable Content Area --- */
+        .content-area {
+            flex: 1;
+            padding-top: 1rem;
+            padding-bottom: 4rem;
+        }
+
+        .hero-header {
+            margin-bottom: 4rem;
+        }
+
+        .hero-header h2 {
+            font-size: 5.5rem;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: -2px;
+        }
+
+        .hero-header .gradient-text {
+            background: linear-gradient(to right, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            height: 1px;
+            flex-grow: 1;
+            background: var(--border-color);
+        }
+
+        /* --- Repositories Grid --- */
+        .repo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .repo-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .repo-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-purple);
+        }
+
+        .repo-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-light);
+            word-break: break-all;
+        }
+
+        .repo-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .tech-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(255, 42, 122, 0.1);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--accent-pink);
+            font-weight: 600;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 1024px) {
+            .layout-container {
+                flex-direction: column;
+            }
+            .profile-card {
+                position: static; /* Removes sticky on small screens */
+                width: 100%;
+                flex: none;
+            }
+            .hero-header h2 {
+                font-size: 4rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero-header h2 {
+                font-size: 3rem;
+            }
+            .repo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="layout-container">
+        
+        <aside class="profile-card">
+            <div class="avatar-container">
+                <img id="github-avatar" src="" alt="Profile Photo">
+            </div>
+            
+            <h1 id="user-name">Loading...</h1>
+            <p class="title">Software Developer</p>
+            
+            <p class="bio" id="github-bio">
+                Software Developer specializing in Service Mapping and complex workflow development.
+            </p>
+
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <h3 id="stat-repos">0</h3>
+                    <p>Repos</p>
+                </div>
+                <div class="stat-item">
+                    <h3 id="stat-followers">0</h3>
+                    <p>Followers</p>
+                </div>
+            </div>
+
+            <a href="https://github.com/shajal16" id="github-link" target="_blank" class="btn">View GitHub ↗</a>
+        </aside>
+
+        <main class="content-area">
+            
+            <div class="hero-header">
+                <h2>Breaking the <br><span class="gradient-text">Code</span></h2>
+            </div>
+
+            <h3 class="section-title">All Repositories</h3>
+            
+            <div class="repo-grid" id="repos-container">
+                <p style="color: var(--text-muted);">Fetching repositories from GitHub...</p>
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+        // Set GitHub Username hardcoded as requested
+        const githubUsername = 'shajal16'; 
+
+        // 1. FETCH PROFILE DATA
+        async function fetchGitHubProfile() {
+            try {
+                const response = await fetch(`https://api.github.com/users/${githubUsername}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+
+                // Update DOM elements
+                document.getElementById('user-name').textContent = data.name || data.login;
+                document.getElementById('github-link').href = data.html_url;
+                
+                // Update stats
+                document.getElementById('stat-repos').textContent = data.public_repos;
+                document.getElementById('stat-followers').textContent = data.followers;
+
+                // Update Bio
+                if (data.bio) {
+                    document.getElementById('github-bio').textContent = data.bio;
+                }
+
+                // Update Avatar
+                const avatarImg = document.getElementById('github-avatar');
+                avatarImg.src = data.avatar_url;
+                avatarImg.style.opacity = 1;
+
+            } catch (error) {
+                console.error("Error fetching GitHub profile:", error);
+                document.getElementById('user-name').textContent = "Md Kamal Hossain";
+            }
+        }
+
+        // 2. FETCH ALL REPOSITORY DATA
+        async function fetchGitHubRepos() {
+            try {
+                // Fetching up to 100 repositories to ensure they all show up
+                const response = await fetch(`https://api.github.com/users/${githubUsername}/repos?sort=updated&per_page=100`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const repos = await response.json();
+
+                const container = document.getElementById('repos-container');
+                container.innerHTML = ''; // Clear loading text
+
+                repos.forEach(repo => {
+                    const repoCard = document.createElement('a');
+                    repoCard.className = 'repo-card';
+                    repoCard.href = repo.html_url;
+                    repoCard.target = '_blank';
+
+                    const title = document.createElement('h3');
+                    title.textContent = repo.name;
+
+                    const desc = document.createElement('p');
+                    desc.textContent = repo.description || "No description provided.";
+
+                    const tagsContainer = document.createElement('div');
+                    tagsContainer.className = 'tech-tags';
+                    
+                    if (repo.language) {
+                        const langTag = document.createElement('span');
+                        langTag.className = 'tag';
+                        langTag.textContent = repo.language;
+                        tagsContainer.appendChild(langTag);
+                    }
+
+                    repoCard.appendChild(title);
+                    repoCard.appendChild(desc);
+                    repoCard.appendChild(tagsContainer);
+                    container.appendChild(repoCard);
+                });
+
+            } catch (error) {
+                console.error("Error fetching GitHub repos:", error);
+                document.getElementById('repos-container').innerHTML = '<p style="color: red;">Failed to load repositories.</p>';
+            }
+        }
+
+        // Run functions
+        fetchGitHubProfile();
+        fetchGitHubRepos();
+    </script>
+</body>
+</html>
